@@ -17,6 +17,7 @@
 #define LIST_H
 
 #include "token.h"
+#include <stdbool.h>
 #include <stdio.h> // FILE (used by the printing helpers)
 
 // One box in the chain. `struct TokenNode` names itself so that `next` can
