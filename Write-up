@@ -1,0 +1,11 @@
+Typically, people would say that C containers should leave cleanup to the caller, but it is really the TokenList that 
+makes sure that there is strict single ownership over every token and its respective heap allocated lexeme string. Looking
+at it this way, token_make initially creates the token by allocating memory on the heap for its lexeme string and passing 
+the initial ownership to the caller. The moment that the token is passed to list_push_back, the ownership goes to the list,
+which has token within TokenNode. The lexeme string is then eventually freed in the token_free() function with 
+free(token.lexeme) when list_remove_first or list_destroy diminishes the node. 
+
+If list_push_back fails to allocate the memory for a new node and doesn't call token_free() after on the token, the heap
+memory that was allocated for lexeme is then lost (memory leak). In the implementation, the ownership is still kept by 
+making sure that list_push_back frees the token whenever it fails to allocate and list_destroy will release any memory
+allocated for token during cleanup.
